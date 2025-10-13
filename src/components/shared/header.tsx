@@ -12,7 +12,10 @@ const Header = (props: Props) => {
         <Link href={"/"}>
           <h2 className=" text-2xl font-semibold">বুনন রঙ</h2>
         </Link>
-        <NavigationMenuDemo />
+        <div className=" hidden md:block">
+          {" "}
+          <NavigationMenuDemo />
+        </div>
         <div className=" flex items-center gap-2">
           <Cart />
         </div>
