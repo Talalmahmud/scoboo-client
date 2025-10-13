@@ -59,7 +59,9 @@ export default function ProductCardSlider({
 
       {/* --- Outer Swiper (Products) --- */}
       <Swiper
-        modules={[Navigation, Autoplay]}
+        modules={[Navigation]}
+        // autoplay={{ delay: 2500, disableOnInteraction: false }}
+        navigation
         spaceBetween={16}
         slidesPerView={3}
         onInit={(swiper) => {
@@ -104,8 +106,7 @@ export default function ProductCardSlider({
                   )}
 
                   <Swiper
-                    modules={[Autoplay, Pagination]}
-                    autoplay={{ delay: 2500, disableOnInteraction: false }}
+                    modules={[Pagination]}
                     pagination={{
                       clickable: true,
                       bulletClass:
