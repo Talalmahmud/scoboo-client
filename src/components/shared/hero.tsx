@@ -41,6 +41,7 @@ export default function Hero() {
       <Swiper
         modules={[Navigation, Autoplay]}
         navigation
+        pagination
         autoplay={{ delay: 4000, disableOnInteraction: false }}
         loop
         className="w-full max-h-[700px]"

@@ -21,9 +21,9 @@ interface Product {
   id: string;
   name: string;
   price: number;
-  originalPrice?: number;
-  rating?: number;
-  soldCount?: number;
+  discount?: number;
+  rating?: number | 5;
+  soldCount?: number | 200;
   colors: ColorVariant[];
 }
 
@@ -97,7 +97,7 @@ export default function ProductCardSlider({
           return (
             <SwiperSlide key={product.id} className="py-4">
               <div className="group rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all border border-gray-100 bg-white">
-                {/* --- Inner Image Slider with Pagination --- */}
+                {/* --- Innezr Image Slider with Pagination --- */}
                 <div className="relative h-64 w-full overflow-hidden">
                   {discount > 0 && (
                     <span className="absolute top-3 left-3 z-10 bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded-full shadow">
@@ -118,7 +118,7 @@ export default function ProductCardSlider({
                     loop
                     className="h-full w-full"
                   >
-                    {selectedColor.images.map((img, i) => (
+                    {selectedColor?.images.map((img, i) => (
                       <SwiperSlide key={i}>
                         <Image
                           height={400}
