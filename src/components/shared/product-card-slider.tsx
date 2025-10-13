@@ -1,30 +1,30 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Autoplay } from "swiper/modules";
+import { Navigation, Autoplay, Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import "swiper/css/pagination";
 import { Button } from "@/components/ui/button";
-import {
-  ArrowLeft,
-  ArrowRight,
-  ChevronLeft,
-  ChevronRight,
-  Star,
-} from "lucide-react";
+import { ArrowLeft, ArrowRight, Star } from "lucide-react";
 import Image from "next/image";
 import clsx from "clsx";
+
+interface ColorVariant {
+  colorName: string;
+  colorCode: string;
+  images: string[];
+}
 
 interface Product {
   id: string;
   name: string;
-  image: string;
   price: number;
-  originalPrice?: number; // optional for discount
-  rating?: number; // e.g., 4.5
-  soldCount?: number; // e.g., 120
+  originalPrice?: number;
+  rating?: number;
+  soldCount?: number;
+  colors: ColorVariant[];
 }
 
 interface ProductCardSliderProps {
@@ -38,8 +38,8 @@ export default function ProductCardSlider({
   const nextRef = useRef<HTMLButtonElement | null>(null);
 
   return (
-    <div className="relative w-full ">
-      {/* --- Navigation Buttons --- */}
+    <div className="relative w-full">
+      {/* --- Outer Navigation Buttons --- */}
       <Button
         ref={prevRef}
         variant="ghost"
@@ -52,21 +52,16 @@ export default function ProductCardSlider({
         ref={nextRef}
         variant="ghost"
         size="icon"
-        className="absolute rounded-full  right-2 top-1/2 z-10 -translate-y-1/2 bg-white/80 hover:bg-white shadow"
+        className="absolute rounded-full right-2 top-1/2 z-10 -translate-y-1/2 bg-white/80 hover:bg-white shadow"
       >
         <ArrowRight className="h-5 w-5" />
       </Button>
 
-      {/* --- Swiper Slider --- */}
+      {/* --- Outer Swiper (Products) --- */}
       <Swiper
         modules={[Navigation, Autoplay]}
         spaceBetween={16}
         slidesPerView={3}
-        loop
-        autoplay={{
-          delay: 3500,
-          disableOnInteraction: false,
-        }}
         onInit={(swiper) => {
           if (swiper.params.navigation) {
             const navigation = swiper.params.navigation as any;
@@ -78,11 +73,16 @@ export default function ProductCardSlider({
         }}
         breakpoints={{
           320: { slidesPerView: 1 },
-          640: { slidesPerView: 2 },
-          1024: { slidesPerView: 3 },
+          480: { slidesPerView: 1.5 },
+          768: { slidesPerView: 2.5 },
+          1024: { slidesPerView: 3.5 },
         }}
       >
         {products.map((product) => {
+          const [selectedColor, setSelectedColor] = useState<ColorVariant>(
+            product.colors[0]
+          );
+
           const discount =
             product.originalPrice && product.originalPrice > product.price
               ? Math.round(
@@ -95,7 +95,7 @@ export default function ProductCardSlider({
           return (
             <SwiperSlide key={product.id} className="py-4">
               <div className="group rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all border border-gray-100 bg-white">
-                {/* --- Product Image --- */}
+                {/* --- Inner Image Slider with Pagination --- */}
                 <div className="relative h-64 w-full overflow-hidden">
                   {discount > 0 && (
                     <span className="absolute top-3 left-3 z-10 bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded-full shadow">
@@ -103,13 +103,32 @@ export default function ProductCardSlider({
                     </span>
                   )}
 
-                  <Image
-                    height={400}
-                    width={600}
-                    src={product.image}
-                    alt={product.name}
-                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                  />
+                  <Swiper
+                    modules={[Autoplay, Pagination]}
+                    autoplay={{ delay: 2500, disableOnInteraction: false }}
+                    pagination={{
+                      clickable: true,
+                      bulletClass:
+                        "swiper-pagination-bullet !bg-gray-400 opacity-60",
+                      bulletActiveClass: "!bg-primary opacity-100",
+                    }}
+                    spaceBetween={0}
+                    slidesPerView={1}
+                    loop
+                    className="h-full w-full"
+                  >
+                    {selectedColor.images.map((img, i) => (
+                      <SwiperSlide key={i}>
+                        <Image
+                          height={400}
+                          width={600}
+                          src={img}
+                          alt={`${product.name}-${selectedColor.colorName}`}
+                          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        />
+                      </SwiperSlide>
+                    ))}
+                  </Swiper>
                 </div>
 
                 {/* --- Product Info --- */}
@@ -155,6 +174,26 @@ export default function ProductCardSlider({
                       </span>
                     )}
                   </div>
+
+                  {/* Color Dots */}
+                  {product.colors.length > 1 && (
+                    <div className="flex items-center gap-2 mt-3">
+                      {product.colors.map((c) => (
+                        <button
+                          key={c.colorName}
+                          onClick={() => setSelectedColor(c)}
+                          className={clsx(
+                            "w-5 h-5 rounded-full border shadow-sm ring-offset-2 transition-all",
+                            selectedColor.colorCode === c.colorCode
+                              ? "ring-2 ring-primary scale-110"
+                              : "hover:ring-2 hover:ring-gray-300"
+                          )}
+                          style={{ backgroundColor: c.colorCode }}
+                          title={c.colorName}
+                        />
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
             </SwiperSlide>

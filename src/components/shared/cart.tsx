@@ -34,6 +34,30 @@ const Cart = () => {
         "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aGVhZHBob25lfGVufDB8fDB8fHww&auto=format&fit=crop&q=60&w=900",
       qty: 2,
     },
+    {
+      id: 3,
+      name: "Traditional Silk Scarf",
+      price: 1200,
+      image:
+        "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aGVhZHBob25lfGVufDB8fDB8fHww&auto=format&fit=crop&q=60&w=900",
+      qty: 2,
+    },
+    {
+      id: 4,
+      name: "Traditional Silk Scarf",
+      price: 1200,
+      image:
+        "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aGVhZHBob25lfGVufDB8fDB8fHww&auto=format&fit=crop&q=60&w=900",
+      qty: 2,
+    },
+    {
+      id: 5,
+      name: "Traditional Silk Scarf",
+      price: 1200,
+      image:
+        "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aGVhZHBob25lfGVufDB8fDB8fHww&auto=format&fit=crop&q=60&w=900",
+      qty: 2,
+    },
   ];
 
   const total = cartItems.reduce((sum, item) => sum + item.price * item.qty, 0);

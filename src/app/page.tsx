@@ -6,52 +6,139 @@ export default function Home() {
   const demoProducts = [
     {
       id: "1",
-      name: "Wireless Headphones",
-      image:
-        "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aGVhZHBob25lfGVufDB8fDB8fHww&auto=format&fit=crop&q=60&w=900",
-      price: 99,
-      originalPrice: 129,
-      rating: 4.6,
-      soldCount: 240,
+      name: "Handwoven Cotton Saree",
+      price: 1250,
+      originalPrice: 1600,
+      rating: 4.7,
+      soldCount: 80,
+      colors: [
+        {
+          colorName: "Red",
+          colorCode: "#c0392b",
+          images: [
+            "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8cHJvZHVjdHxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&q=60&w=600",
+            "https://plus.unsplash.com/premium_photo-1679913792906-13ccc5c84d44?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8cHJvZHVjdHxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&q=60&w=600",
+          ],
+        },
+        {
+          colorName: "Blue",
+          colorCode: "#2980b9",
+          images: [
+            "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8cHJvZHVjdHxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&q=60&w=600",
+            "https://plus.unsplash.com/premium_photo-1670537994863-5ad53a3214e0?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTN8fHByb2R1Y3R8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&q=60&w=600",
+          ],
+        },
+        {
+          colorName: "Green",
+          colorCode: "#27ae60",
+          images: [
+            "https://images.unsplash.com/photo-1615396899839-c99c121888b0?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTV8fHByb2R1Y3R8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&q=60&w=600",
+            "https://plus.unsplash.com/premium_photo-1677541205130-51e60e937318?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTd8fHByb2R1Y3R8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&q=60&w=600",
+          ],
+        },
+      ],
     },
     {
       id: "2",
-      name: "Smart Watch",
-      image:
-        "https://images.unsplash.com/photo-1620625515032-6ed0c1790c75?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjB8fHdhdGNofGVufDB8fDB8fHww&auto=format&fit=crop&q=60&w=900",
-      price: 149,
-      originalPrice: 199,
-      rating: 4.8,
-      soldCount: 320,
+      name: "Handwoven  Saree",
+      price: 1250,
+      originalPrice: 1600,
+      rating: 4.7,
+      soldCount: 80,
+      colors: [
+        {
+          colorName: "Red",
+          colorCode: "#c0392b",
+          images: [
+            "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8cHJvZHVjdHxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&q=60&w=600",
+            "https://plus.unsplash.com/premium_photo-1679913792906-13ccc5c84d44?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8cHJvZHVjdHxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&q=60&w=600",
+          ],
+        },
+        {
+          colorName: "Blue",
+          colorCode: "#2980b9",
+          images: [
+            "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8cHJvZHVjdHxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&q=60&w=600",
+            "https://plus.unsplash.com/premium_photo-1670537994863-5ad53a3214e0?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTN8fHByb2R1Y3R8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&q=60&w=600",
+          ],
+        },
+        {
+          colorName: "Green",
+          colorCode: "#27ae60",
+          images: [
+            "https://images.unsplash.com/photo-1615396899839-c99c121888b0?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTV8fHByb2R1Y3R8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&q=60&w=600",
+            "https://plus.unsplash.com/premium_photo-1677541205130-51e60e937318?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTd8fHByb2R1Y3R8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&q=60&w=600",
+          ],
+        },
+      ],
     },
     {
       id: "3",
-      name: "Gaming Mouse",
-      image:
-        "https://images.unsplash.com/photo-1613141411244-0e4ac259d217?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTR8fG1vdXNlfGVufDB8fDB8fHww&auto=format&fit=crop&q=60&w=900",
-      price: 59,
-      originalPrice: 89,
-      rating: 4.3,
-      soldCount: 180,
+      name: "Handwoven  Saree",
+      price: 1250,
+      originalPrice: 1600,
+      rating: 4.7,
+      soldCount: 80,
+      colors: [
+        {
+          colorName: "Red",
+          colorCode: "#c0392b",
+          images: [
+            "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8cHJvZHVjdHxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&q=60&w=600",
+            "https://plus.unsplash.com/premium_photo-1679913792906-13ccc5c84d44?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8cHJvZHVjdHxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&q=60&w=600",
+          ],
+        },
+        {
+          colorName: "Blue",
+          colorCode: "#2980b9",
+          images: [
+            "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8cHJvZHVjdHxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&q=60&w=600",
+            "https://plus.unsplash.com/premium_photo-1670537994863-5ad53a3214e0?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTN8fHByb2R1Y3R8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&q=60&w=600",
+          ],
+        },
+        {
+          colorName: "Green",
+          colorCode: "#27ae60",
+          images: [
+            "https://images.unsplash.com/photo-1615396899839-c99c121888b0?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTV8fHByb2R1Y3R8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&q=60&w=600",
+            "https://plus.unsplash.com/premium_photo-1677541205130-51e60e937318?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTd8fHByb2R1Y3R8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&q=60&w=600",
+          ],
+        },
+      ],
     },
     {
       id: "4",
-      name: "Laptop Stand",
-      image:
-        "https://images.unsplash.com/photo-1641057349981-48bdca8fe870?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTl8fGxhcHRvcCUyMHN0YW5kfGVufDB8fDB8fHww&auto=format&fit=crop&q=60&w=900",
-      price: 39,
-      rating: 4.1,
-      soldCount: 95,
-    },
-    {
-      id: "5",
-      name: "Bluetooth Speaker",
-      image:
-        "https://images.unsplash.com/photo-1529359744902-86b2ab9edaea?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fHNwZWFrZXJ8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&q=60&w=900",
-      price: 89,
-      originalPrice: 119,
+      name: "Handwoven  Saree",
+      price: 1250,
+      originalPrice: 1600,
       rating: 4.7,
-      soldCount: 150,
+      soldCount: 80,
+      colors: [
+        {
+          colorName: "Red",
+          colorCode: "#c0392b",
+          images: [
+            "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8cHJvZHVjdHxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&q=60&w=600",
+            "https://plus.unsplash.com/premium_photo-1679913792906-13ccc5c84d44?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8cHJvZHVjdHxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&q=60&w=600",
+          ],
+        },
+        {
+          colorName: "Blue",
+          colorCode: "#2980b9",
+          images: [
+            "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8cHJvZHVjdHxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&q=60&w=600",
+            "https://plus.unsplash.com/premium_photo-1670537994863-5ad53a3214e0?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTN8fHByb2R1Y3R8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&q=60&w=600",
+          ],
+        },
+        {
+          colorName: "Green",
+          colorCode: "#27ae60",
+          images: [
+            "https://images.unsplash.com/photo-1615396899839-c99c121888b0?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTV8fHByb2R1Y3R8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&q=60&w=600",
+            "https://plus.unsplash.com/premium_photo-1677541205130-51e60e937318?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTd8fHByb2R1Y3R8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&q=60&w=600",
+          ],
+        },
+      ],
     },
   ];
 
