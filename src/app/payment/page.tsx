@@ -58,15 +58,15 @@ export default function PaymentPage() {
       <div className="w-full max-w-6xl text-center mb-12 relative z-10">
         <div className="inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm rounded-2xl px-6 py-3 shadow-lg border border-white/20 mb-4">
           <Crown className="w-5 h-5 text-amber-500" />
-          <span className="text-sm font-semibold bg-gradient-to-r from-amber-500 to-orange-600 bg-clip-text text-transparent">
+          <span className="text-[12px] font-semibold bg-gradient-to-r from-amber-500 to-orange-600 bg-clip-text text-transparent">
             PREMIUM SHOPPING EXPERIENCE
           </span>
           <Crown className="w-5 h-5 text-amber-500" />
         </div>
-        <h1 className="text-4xl font-bold text-gray-900 mb-3 bg-gradient-to-r from-gray-900 via-blue-900 to-gray-900 bg-clip-text text-transparent">
+        <h1 className="text-2xl font-bold text-gray-900 mb-3 ">
           Secure Checkout
         </h1>
-        <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+        <p className="text-gray-600 text-sm max-w-2xl mx-auto">
           Complete your purchase with confidence - your satisfaction is
           guaranteed
         </p>
@@ -78,10 +78,10 @@ export default function PaymentPage() {
         <div className="lg:col-span-8 space-y-8">
           {/* Enhanced Step Indicator */}
           <Card className="w-full shadow-2xl border-0 rounded-3xl bg-white/90 backdrop-blur-sm overflow-hidden">
-            <CardContent className="p-6">
+            <CardContent className="p-3">
               <div className="flex justify-between relative">
                 {/* Animated Progress Bar */}
-                <div className="absolute top-6 left-0 right-0 h-2 bg-gray-200 rounded-full -z-10 overflow-hidden">
+                <div className="absolute top-4 left-0 right-0 h-2 bg-gray-200 rounded-full -z-10 overflow-hidden">
                   <div
                     className="h-full bg-gradient-to-r from-blue-500 to-purple-600 rounded-full transition-all duration-1000 ease-out shadow-lg shadow-blue-500/25"
                     style={{
@@ -97,7 +97,7 @@ export default function PaymentPage() {
                   >
                     <button
                       onClick={() => !isAnimating && setCurrentStep(index)}
-                      className={`flex items-center justify-center w-12 h-12 rounded-2xl border-2 transition-all duration-500 transform hover:scale-110 ${
+                      className={`flex items-center justify-center w-10 h-10 rounded-full border-2 transition-all duration-500 transform hover:scale-110 ${
                         index <= currentStep
                           ? "border-white bg-gradient-to-br from-blue-500 to-purple-600 text-white shadow-lg shadow-blue-500/50"
                           : "border-gray-300 bg-white text-gray-500 shadow-md"
@@ -295,7 +295,7 @@ function CartStep() {
         {cartItems.map((item, index) => (
           <div
             key={item.id}
-            className="flex items-center gap-4 p-6 rounded-2xl border border-gray-100 bg-white hover:shadow-lg transition-all duration-300 group"
+            className="flex flex-col md:flex-row items-center gap-4 p-6 rounded-2xl border border-gray-100 bg-white hover:shadow-lg transition-all duration-300 group"
           >
             <div className="w-20 h-20 bg-gradient-to-br from-blue-100 to-purple-100 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
               <span className="text-3xl">{item.image}</span>
@@ -620,7 +620,7 @@ function PaymentStep() {
   ];
 
   return (
-    <div className="space-y-8">
+    <div className=" space-y-8 text-justify">
       <div className="flex items-center gap-3">
         <div className="p-2 rounded-xl bg-purple-100">
           <CreditCard className="w-5 h-5 text-purple-600" />
@@ -637,21 +637,24 @@ function PaymentStep() {
         {paymentMethods.map((method) => (
           <label
             key={method.id}
-            className={`flex items-start gap-4 p-5 rounded-2xl border-2 cursor-pointer transition-all duration-300 hover:shadow-lg ${
+            className={`flex flex-col md:flex-row items-start gap-4 p-2 rounded-2xl border-2 cursor-pointer transition-all duration-300 hover:shadow-lg ${
               selectedMethod === method.id
                 ? "border-purple-500 bg-purple-50/30 shadow-md"
                 : "border-gray-200 bg-white"
             }`}
           >
-            <input
-              type="radio"
-              name="payment"
-              value={method.id}
-              checked={selectedMethod === method.id}
-              onChange={(e) => setSelectedMethod(e.target.value)}
-              className="mt-1 w-5 h-5 accent-purple-600"
-            />
-            <div className="text-2xl">{method.icon}</div>
+            <div className=" flex items-center">
+              {" "}
+              <input
+                type="radio"
+                name="payment"
+                value={method.id}
+                checked={selectedMethod === method.id}
+                onChange={(e) => setSelectedMethod(e.target.value)}
+                className="mt-1 w-5 h-5 accent-purple-600"
+              />
+              <div className="text-2xl">{method.icon}</div>
+            </div>
             <div className="flex-1">
               <div className="flex items-center gap-3 mb-1">
                 <span className="font-semibold text-gray-900">
