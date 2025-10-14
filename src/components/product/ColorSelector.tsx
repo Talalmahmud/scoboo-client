@@ -14,7 +14,11 @@ interface Props {
   onSelectColor: (color: ColorVariant) => void;
 }
 
-export default function ColorSelector({ colors, selectedColor, onSelectColor }: Props) {
+export default function ColorSelector({
+  colors,
+  selectedColor,
+  onSelectColor,
+}: Props) {
   return (
     <div className="flex items-center gap-2 mt-3">
       {colors.map((c) => (

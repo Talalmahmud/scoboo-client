@@ -11,20 +11,43 @@ import { ArrowLeft, ArrowRight, Star } from "lucide-react";
 import Image from "next/image";
 import clsx from "clsx";
 
-interface ColorVariant {
+type ColorTranslation = { name: string };
+
+type Color = {
+  id: string;
+  code: string;
+  translations: ColorTranslation[];
+};
+
+type ProductAttributeColor = {
+  color: Color;
+};
+
+type ProductAttribute = {
+  id: string;
+  stock: number | 0;
+  images: string[];
+  colors: ProductAttributeColor[];
+};
+
+type Product = {
+  id: string;
+  translations: any;
+  price: number;
+  discount: number;
+  rating?: number;
+  soldCount?: number;
+  attributes: ProductAttribute[];
+};
+
+type ColorVariant = {
   colorName: string;
   colorCode: string;
   images: string[];
-}
+};
 
-interface Product {
-  id: string;
-  name: string;
-  price: number;
-  discount?: number;
-  rating?: number | 5;
-  soldCount?: number | 200;
-  colors: ColorVariant[];
+interface ProductCardSliderProps {
+  products: Product[];
 }
 
 interface ProductCardSliderProps {
@@ -81,23 +104,19 @@ export default function ProductCardSlider({
         }}
       >
         {products.map((product) => {
-          const [selectedColor, setSelectedColor] = useState<ColorVariant>(
-            product.colors[0]
-          );
-
+          const [selectedAttribute, setSelectedAttribute] =
+            useState<ProductAttribute>(product.attributes[0]);
           const discount =
-            product.originalPrice && product.originalPrice > product.price
+            product.price && product.price > product.discount
               ? Math.round(
-                  ((product.originalPrice - product.price) /
-                    product.originalPrice) *
-                    100
+                  ((product.price - product.discount) / product.price) * 100
                 )
               : 0;
 
           return (
             <SwiperSlide key={product.id} className="py-4">
               <div className="group rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all border border-gray-100 bg-white">
-                {/* --- Innezr Image Slider with Pagination --- */}
+                {/* --- Inner Image Slider with Pagination --- */}
                 <div className="relative h-64 w-full overflow-hidden">
                   {discount > 0 && (
                     <span className="absolute top-3 left-3 z-10 bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded-full shadow">
@@ -118,13 +137,13 @@ export default function ProductCardSlider({
                     loop
                     className="h-full w-full"
                   >
-                    {selectedColor?.images.map((img, i) => (
+                    {selectedAttribute?.images.map((img, i) => (
                       <SwiperSlide key={i}>
                         <Image
                           height={400}
                           width={600}
                           src={img}
-                          alt={`${product.name}-${selectedColor.colorName}`}
+                          alt={`${i}`}
                           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                         />
                       </SwiperSlide>
@@ -135,22 +154,21 @@ export default function ProductCardSlider({
                 {/* --- Product Info --- */}
                 <div className="p-4">
                   <h3 className="text-base font-semibold line-clamp-1">
-                    {product.name}
+                    {product?.translations?.[0].name}
                   </h3>
 
                   {/* Price + Discount */}
                   <div className="flex items-center gap-2 mt-1">
                     <p className="text-lg font-bold text-primary">
-                      Tk {product.price}
+                      Tk {product.price - product.discount}
                     </p>
-                    {product.originalPrice && (
+                    {product.discount > 0 && (
                       <p className="text-sm text-gray-400 line-through">
-                        Tk {product.originalPrice}
+                        Tk {product.price}
                       </p>
                     )}
                   </div>
 
-                  {/* Rating + Sold Count */}
                   <div className="flex items-center justify-between mt-2">
                     <div className="flex items-center gap-1">
                       {[...Array(5)].map((_, i) => (
@@ -169,15 +187,18 @@ export default function ProductCardSlider({
                         {product.rating?.toFixed(1) || "0.0"}
                       </span>
                     </div>
-                    {product.soldCount && (
+                    {/* {product.soldCount && (
                       <span className="text-xs text-gray-500">
                         {product.soldCount}+ sold
                       </span>
-                    )}
+                    )} */}
+                    <p className=" text-sm">
+                      stock ({selectedAttribute?.stock || 0})
+                    </p>
                   </div>
 
                   {/* Color Dots */}
-                  {product.colors.length > 1 && (
+                  {/* {product.colors.length > 1 && (
                     <div className="flex items-center gap-2 mt-3">
                       {product.colors.map((c) => (
                         <button
@@ -193,6 +214,44 @@ export default function ProductCardSlider({
                           title={c.colorName}
                         />
                       ))}
+                    </div>
+                  )} */}
+
+                  {product?.attributes?.length > 0 && (
+                    <div className="mt-4">
+                      <div className="flex flex-wrap gap-3">
+                        {product.attributes.map((attribute, attrIndex) => {
+                          const isSelected =
+                            selectedAttribute?.id === attribute.id;
+                          const gradient = attribute.colors.length
+                            ? `conic-gradient(${attribute.colors
+                                .map((c) => c.color.code)
+                                .join(",")})`
+                            : "#e5e7eb"; // fallback gray if no color
+
+                          return (
+                            <button
+                              key={attrIndex}
+                              onClick={() => setSelectedAttribute(attribute)}
+                              className={clsx(
+                                "relative w-6 h-6 rounded-full border-2 transition-all duration-200 flex items-center justify-center",
+                                isSelected
+                                  ? "border-primary ring-2 ring-primary/30 scale-110"
+                                  : "border-gray-300 hover:border-gray-400 hover:scale-105"
+                              )}
+                              style={{ background: gradient }}
+                            >
+                              {/* Inner white dot for contrast */}
+                              <div
+                                className={clsx(
+                                  "absolute inset-0 rounded-full",
+                                  isSelected ? "ring-2 ring-white/70" : ""
+                                )}
+                              />
+                            </button>
+                          );
+                        })}
+                      </div>
                     </div>
                   )}
                 </div>
