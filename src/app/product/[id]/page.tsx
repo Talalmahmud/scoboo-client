@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Star } from "lucide-react";
 import clsx from "clsx";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import api from "@/utils/axios";
 
 const productData = {
   id: "1",
@@ -70,6 +71,13 @@ export default function ProductDetailsPage() {
   );
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [tabValue, setTabValue] = useState("description");
+
+  const [product, setProduct] = useState<any>();
+  const fetchProduct = async () => {
+    try {
+      const fetchData = await api.get("/proucts/public/");
+    } catch (error) {}
+  };
 
   return (
     <div className="max-w-6xl mx-auto py-10 px-4 space-y-12">
