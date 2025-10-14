@@ -10,6 +10,8 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, ArrowRight, Star } from "lucide-react";
 import Image from "next/image";
 import clsx from "clsx";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 type ColorTranslation = { name: string };
 
@@ -84,7 +86,6 @@ export default function ProductCardSlider({
       <Swiper
         modules={[Navigation]}
         // autoplay={{ delay: 2500, disableOnInteraction: false }}
-        navigation
         spaceBetween={16}
         slidesPerView={3}
         onInit={(swiper) => {
@@ -106,6 +107,7 @@ export default function ProductCardSlider({
         {products.map((product) => {
           const [selectedAttribute, setSelectedAttribute] =
             useState<ProductAttribute>(product.attributes[0]);
+          const router = useRouter();
           const discount =
             product.price && product.price > product.discount
               ? Math.round(
@@ -115,7 +117,10 @@ export default function ProductCardSlider({
 
           return (
             <SwiperSlide key={product.id} className="py-4">
-              <div className="group rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all border border-gray-100 bg-white">
+              <div
+                onClick={() => router.push(`/product/${product.id}`)}
+                className="group rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all border border-gray-100 bg-white"
+              >
                 {/* --- Inner Image Slider with Pagination --- */}
                 <div className="relative h-64 w-full overflow-hidden">
                   {discount > 0 && (
