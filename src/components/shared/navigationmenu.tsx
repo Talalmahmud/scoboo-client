@@ -78,11 +78,14 @@ export function NavigationMenuDemo() {
               <Link href={"/"}>{item?.name}</Link>
             </NavigationMenuTrigger>
             <NavigationMenuContent>
-              <ul className="grid w-[200px] gap-4">
+              <ul className="grid w-[100px] gap-4">
                 {item?.subcategories?.map((subItem: any) => (
                   <li key={subItem?.id}>
                     <NavigationMenuLink asChild>
-                      <Link href="#" className="flex-row items-center gap-2">
+                      <Link
+                        href={`/search/?categoryId=${item.id}&categoryId=${subItem.id}`}
+                        className="flex-row items-center gap-2"
+                      >
                         <Image
                           src={subItem?.logo}
                           height={16}
@@ -96,6 +99,16 @@ export function NavigationMenuDemo() {
                     </NavigationMenuLink>
                   </li>
                 ))}
+                <li>
+                  <NavigationMenuLink asChild>
+                    <Link
+                      href={`/search/?categoryId=${item.id}`}
+                      className="block text-center text-sm font-medium text-blue-600 hover:text-blue-700 border-b-2 border-transparent hover:border-blue-600 transition-all duration-200"
+                    >
+                      View All →
+                    </Link>
+                  </NavigationMenuLink>
+                </li>
               </ul>
             </NavigationMenuContent>
           </NavigationMenuItem>

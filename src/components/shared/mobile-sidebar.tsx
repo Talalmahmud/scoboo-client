@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import {
   Sheet,
+  SheetClose,
   SheetContent,
   SheetDescription,
   SheetFooter,
@@ -82,19 +83,28 @@ const MobileSideBar = () => {
                   {category.subcategories &&
                   category.subcategories.length > 0 ? (
                     category.subcategories.map((sub: any) => (
-                      <Link
-                        key={sub.id}
-                        href={`/category/${sub.slug}`}
-                        className="block text-sm text-gray-700 hover:text-primary py-1"
-                      >
-                        {sub.name}
-                      </Link>
+                      <SheetClose key={sub.id} asChild>
+                        <Link
+                          href={`/search/?categoryId=${category?.id}&subcategoryId=${sub?.id}`}
+                          className="block text-sm text-gray-700 hover:text-primary py-1"
+                        >
+                          {sub.name}
+                        </Link>
+                      </SheetClose>
                     ))
                   ) : (
                     <p className="text-xs text-gray-400 italic">
                       No subcategories
                     </p>
                   )}
+                  <SheetClose asChild>
+                    <Link
+                      href={`/search/?categoryId=${category?.id}`}
+                      className=" text-sm hover:border-b border-blue-600 text-blue-600"
+                    >
+                      view all
+                    </Link>
+                  </SheetClose>
                 </CollapsibleContent>
               </Collapsible>
             ))}

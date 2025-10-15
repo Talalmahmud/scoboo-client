@@ -119,7 +119,7 @@ export default function ProductCardSlider({
             <SwiperSlide key={product.id} className="py-4">
               <div
                 onClick={() => router.push(`/product/${product.id}`)}
-                className="group rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all border border-gray-100 bg-white"
+                className="group rounded-2xl cursor-pointer overflow-hidden shadow-md hover:shadow-xl transition-all border border-gray-100 bg-white"
               >
                 {/* --- Inner Image Slider with Pagination --- */}
                 <div className="relative h-64 w-full overflow-hidden">
@@ -237,7 +237,10 @@ export default function ProductCardSlider({
                           return (
                             <button
                               key={attrIndex}
-                              onClick={() => setSelectedAttribute(attribute)}
+                              onClick={(e) => {
+                                e.stopPropagation(); // 👈 Prevents parent click
+                                setSelectedAttribute(attribute);
+                              }}
                               className={clsx(
                                 "relative w-6 h-6 rounded-full border-2 transition-all duration-200 flex items-center justify-center",
                                 isSelected
@@ -246,7 +249,6 @@ export default function ProductCardSlider({
                               )}
                               style={{ background: gradient }}
                             >
-                              {/* Inner white dot for contrast */}
                               <div
                                 className={clsx(
                                   "absolute inset-0 rounded-full",

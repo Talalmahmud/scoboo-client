@@ -16,7 +16,8 @@ const productData = {
   rating: 4.6,
   soldCount: 85,
   description:
-    "Experience the elegance of traditional weaving with our Handcrafted Cotton Saree. Made with premium cotton and vibrant dyes, this saree offers comfort and grace for all occasions.",
+    "Experience the elegance of traditional weaving with our Handcrafted Cotton Saree. Made with premium cotton and vibrant dyes, this saree offers comfort and grace for all occasions.Experience the elegance of traditional weaving with our Handcrafted Cotton Saree. Made with premium cotton and vibrant dyes, this saree offers comfort and grace for all occasions.Experience the elegance of traditional weaving with our Handcrafted Cotton Saree. Made with premium cotton and vibrant dyes, this saree offers comfort and grace for all occasions.Experience the elegance of traditional weaving with our Handcrafted Cotton Saree. Made with premium cotton and vibrant dyes, this saree offers comfort and grace for all occasions.",
+
   specifications: {
     Material: "100% Cotton",
     Length: "6 meters",
@@ -98,7 +99,7 @@ type Props = {
 };
 
 export default function ProductDetailsPage({ product }: Props) {
-  console.log(product);
+  // console.log(product);
   const [selectedAttribute, setSelectedAttribute] = useState(
     product?.attributes[0]
   );
@@ -208,8 +209,8 @@ export default function ProductDetailsPage({ product }: Props) {
                   className={clsx(
                     "w-8 h-8 rounded-full border-2 p-1  transition-all",
                     selectedAttribute?.id === colorVariant.id
-                      ? " border-green-600"
-                      : "border-gray-300"
+                      ? " border-primary ring-2 ring-primary/30 scale-110"
+                      : "border-gray-300 hover:border-gray-400 hover:scale-105"
                   )}
                   title={colorVariant?.id}
                   style={{
@@ -250,13 +251,15 @@ export default function ProductDetailsPage({ product }: Props) {
               Buy Now
             </Button>
           </div>
+          <p className="text-gray-700 leading-relaxed">
+            {productData.description}
+          </p>
         </div>
       </div>
 
       {/* ---- Tabs: Description, Specifications, Reviews ---- */}
       <Tabs value={tabValue} onValueChange={setTabValue} className="space-y-4">
         <TabsList>
-          <TabsTrigger value="description">Description</TabsTrigger>
           <TabsTrigger value="specifications">Specifications</TabsTrigger>
           <TabsTrigger value="reviews">
             Reviews ({productData.reviews.length})
@@ -264,11 +267,6 @@ export default function ProductDetailsPage({ product }: Props) {
         </TabsList>
 
         {/* Description */}
-        <TabsContent value="description">
-          <p className="text-gray-700 leading-relaxed">
-            {productData.description}
-          </p>
-        </TabsContent>
 
         {/* Specifications */}
         <TabsContent value="specifications">
