@@ -83,7 +83,7 @@ export function NavigationMenuDemo() {
                   <li key={subItem?.id}>
                     <NavigationMenuLink asChild>
                       <Link
-                        href={`/search/?categoryId=${item.id}&categoryId=${subItem.id}`}
+                        href={`/search/?categoryId=${item.id}&subcategoryId=${subItem.id}`}
                         className="flex-row items-center gap-2"
                       >
                         <Image

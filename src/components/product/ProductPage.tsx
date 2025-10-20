@@ -78,10 +78,20 @@ type ProductAttributeColor = {
   id: string;
 };
 
+type Size = {
+  id: string;
+  size: {
+    id: string;
+    title: string;
+    description: string;
+  };
+};
+
 type ProductAttribute = {
   id: string;
   stock: number | 0;
   images: string[];
+  sizes: Size[];
   colors: ProductAttributeColor[];
 };
 
@@ -99,7 +109,7 @@ type Props = {
 };
 
 export default function ProductDetailsPage({ product }: Props) {
-  // console.log(product);
+  console.log(product.attributes);
   const [selectedAttribute, setSelectedAttribute] = useState(
     product?.attributes[0]
   );
@@ -108,7 +118,7 @@ export default function ProductDetailsPage({ product }: Props) {
     selectedAttribute?.images[0]
   );
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
-  const [tabValue, setTabValue] = useState("description");
+  const [tabValue, setTabValue] = useState("specifications");
 
   //   const [product, setProduct] = useState<any>();
 
@@ -227,18 +237,18 @@ export default function ProductDetailsPage({ product }: Props) {
           <div className="mb-6">
             <p className="text-sm font-medium mb-2">Select Size:</p>
             <div className="flex gap-3">
-              {selectedColor.sizes.map((size) => (
+              {selectedAttribute?.sizes?.map((size) => (
                 <button
-                  key={size}
-                  onClick={() => setSelectedSize(size)}
+                  key={size.id}
+                  onClick={() => setSelectedSize(size.id)}
                   className={clsx(
                     "px-4 py-2 border rounded-md text-sm transition-all",
-                    selectedSize === size
+                    selectedSize === size.id
                       ? "border-primary bg-primary text-white"
                       : "border-gray-300 hover:border-primary"
                   )}
                 >
-                  {size}
+                  {size?.size?.title}
                 </button>
               ))}
             </div>
@@ -251,9 +261,9 @@ export default function ProductDetailsPage({ product }: Props) {
               Buy Now
             </Button>
           </div>
-          <p className="text-gray-700 leading-relaxed">
+          <li className="text-gray-700 leading-relaxed">
             {productData.description}
-          </p>
+          </li>
         </div>
       </div>
 
