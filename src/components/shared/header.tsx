@@ -13,7 +13,9 @@ const Header = (props: Props) => {
         <div className=" flex flow-row items-center gap-1">
           <MobileSideBar />
           <Link href={"/"}>
-            <h2 className=" text-2xl font-semibold">বুনন রঙ</h2>
+            <h2 className=" text-2xl text-green-400 font-semibold">
+              বুনন <span className=" text-red-500">রঙ</span>
+            </h2>
           </Link>
         </div>
         <div className=" hidden md:block">

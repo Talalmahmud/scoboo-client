@@ -11,56 +11,23 @@ import {
   SheetClose,
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, ShoppingBasket, Trash, Trash2, X } from "lucide-react";
+import { ArrowLeft, ShoppingBasket, Trash2, Minus, Plus } from "lucide-react";
 import Image from "next/image";
+import { useCart } from "../context/CartContext";
 
 const Cart = () => {
-  // Example demo items
-  const cartItems = [
-    {
-      id: 1,
-      name: "Handwoven Cotton Saree",
-      price: 2500,
-      image:
-        "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aGVhZHBob25lfGVufDB8fDB8fHww&auto=format&fit=crop&q=60&w=900",
+  const {
+    cart,
+    removeFromCart,
+    increaseQuantity,
+    decreaseQuantity,
+    isLoading,
+  } = useCart();
 
-      qty: 1,
-    },
-    {
-      id: 2,
-      name: "Traditional Silk Scarf",
-      price: 1200,
-      image:
-        "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aGVhZHBob25lfGVufDB8fDB8fHww&auto=format&fit=crop&q=60&w=900",
-      qty: 2,
-    },
-    {
-      id: 3,
-      name: "Traditional Silk Scarf",
-      price: 1200,
-      image:
-        "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aGVhZHBob25lfGVufDB8fDB8fHww&auto=format&fit=crop&q=60&w=900",
-      qty: 2,
-    },
-    {
-      id: 4,
-      name: "Traditional Silk Scarf",
-      price: 1200,
-      image:
-        "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aGVhZHBob25lfGVufDB8fDB8fHww&auto=format&fit=crop&q=60&w=900",
-      qty: 2,
-    },
-    {
-      id: 5,
-      name: "Traditional Silk Scarf",
-      price: 1200,
-      image:
-        "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aGVhZHBob25lfGVufDB8fDB8fHww&auto=format&fit=crop&q=60&w=900",
-      qty: 2,
-    },
-  ];
-
-  const total = cartItems.reduce((sum, item) => sum + item.price * item.qty, 0);
+  const total = cart.reduce(
+    (sum, item) => sum + (item.product?.price || 0) * item.quantity,
+    0
+  );
 
   return (
     <Sheet>
@@ -68,9 +35,11 @@ const Cart = () => {
       <SheetTrigger asChild>
         <button className="relative p-2 hover:bg-gray-100 rounded-full transition">
           <ShoppingBasket className="h-6 w-6 text-gray-700" />
-          <span className="absolute -top-1 -right-1 bg-rose-600 text-white text-xs font-semibold w-5 h-5 flex items-center justify-center rounded-full">
-            {cartItems.length}
-          </span>
+          {cart.length > 0 && (
+            <span className="absolute -top-1 -right-1 bg-rose-600 text-white text-xs font-semibold w-5 h-5 flex items-center justify-center rounded-full">
+              {cart.length}
+            </span>
+          )}
         </button>
       </SheetTrigger>
 
@@ -78,11 +47,11 @@ const Cart = () => {
       <SheetContent side="right" className="w-full sm:max-w-md p-0">
         <div className="flex flex-col h-full">
           {/* Header */}
-          <SheetHeader className="p-4 border-b flex flex-row justify-between px-4  w-full items-center">
+          <SheetHeader className="p-4 border-b flex flex-row justify-between items-center">
             <SheetClose>
-              <div className=" flex items-center gap-1">
+              <div className="flex items-center gap-1 text-gray-700 hover:text-rose-600 transition">
                 <ArrowLeft />
-                Back to Shopping
+                <span>Back to Shopping</span>
               </div>
             </SheetClose>
             <SheetTitle className="text-lg font-semibold">Your Cart</SheetTitle>
@@ -90,37 +59,84 @@ const Cart = () => {
 
           {/* Cart Items */}
           <div className="flex-1 overflow-y-auto p-4 space-y-4">
-            {cartItems.length === 0 ? (
+            {isLoading ? (
+              <p className="text-center text-gray-500 mt-10">Loading...</p>
+            ) : cart.length === 0 ? (
               <p className="text-center text-gray-500 mt-10">
                 Your cart is empty.
               </p>
             ) : (
-              cartItems.map((item) => (
+              cart.map((item, index) => (
                 <div
-                  key={item.id}
+                  key={`${item.productId}-${item.sizeId}-${item.colorId}-${index}`}
                   className="flex items-center gap-3 border relative rounded-lg p-3 hover:shadow-sm transition"
                 >
-                  <div className=" absolute top-1 right-1">
-                    <Trash2 />
-                  </div>
+                  <button
+                    onClick={() =>
+                      removeFromCart(item.productId, item.sizeId, item.colorId)
+                    }
+                    className="absolute top-1 right-1 p-1 text-gray-500 hover:text-rose-600"
+                  >
+                    <Trash2 size={16} />
+                  </button>
+
                   <div className="relative w-20 h-20 rounded-md overflow-hidden">
                     <Image
-                      src={item.image}
-                      alt={item.name}
+                      src={
+                        item.product?.image ||
+                        "https://via.placeholder.com/100x100?text=No+Image"
+                      }
+                      alt={item.product?.name || "Product"}
                       fill
                       className="object-cover"
                     />
                   </div>
+
                   <div className="flex-1">
                     <h3 className="text-sm font-semibold line-clamp-1">
-                      {item.name}
+                      {item.product?.name || "Unnamed Product"}
                     </h3>
                     <p className="text-xs text-gray-500">
-                      Qty: {item.qty} × ৳{item.price}
+                      {item.sizeId && <span>Size: {item.sizeId}</span>}{" "}
+                      {item.colorId && <span>Color: {item.colorId}</span>}
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      ৳{item.product?.price} × {item.quantity}
                     </p>
                     <p className="text-sm font-bold text-rose-600">
-                      ৳{item.price * item.qty}
+                      ৳{(item.product?.price || 0) * item.quantity}
                     </p>
+                  </div>
+
+                  {/* Quantity Controls */}
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() =>
+                        decreaseQuantity(
+                          item.productId,
+                          item.sizeId,
+                          item.colorId
+                        )
+                      }
+                      className="p-1 border rounded hover:bg-gray-100"
+                    >
+                      <Minus size={14} />
+                    </button>
+                    <span className="text-sm font-semibold">
+                      {item.quantity}
+                    </span>
+                    <button
+                      onClick={() =>
+                        increaseQuantity(
+                          item.productId,
+                          item.sizeId,
+                          item.colorId
+                        )
+                      }
+                      className="p-1 border rounded hover:bg-gray-100"
+                    >
+                      <Plus size={14} />
+                    </button>
                   </div>
                 </div>
               ))

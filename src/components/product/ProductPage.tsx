@@ -3,67 +3,9 @@
 import { useState } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { Star } from "lucide-react";
 import clsx from "clsx";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import api from "@/utils/axios";
-
-const productData = {
-  id: "1",
-  name: "Handcrafted Cotton Saree",
-  price: 1890,
-  originalPrice: 2490,
-  rating: 4.6,
-  soldCount: 85,
-  description:
-    "Experience the elegance of traditional weaving with our Handcrafted Cotton Saree. Made with premium cotton and vibrant dyes, this saree offers comfort and grace for all occasions.Experience the elegance of traditional weaving with our Handcrafted Cotton Saree. Made with premium cotton and vibrant dyes, this saree offers comfort and grace for all occasions.Experience the elegance of traditional weaving with our Handcrafted Cotton Saree. Made with premium cotton and vibrant dyes, this saree offers comfort and grace for all occasions.Experience the elegance of traditional weaving with our Handcrafted Cotton Saree. Made with premium cotton and vibrant dyes, this saree offers comfort and grace for all occasions.",
-
-  specifications: {
-    Material: "100% Cotton",
-    Length: "6 meters",
-    Weight: "1.2 kg",
-    Colors: ["Red", "Green"],
-    Sizes: ["S", "M", "L", "XL"],
-  },
-  colors: [
-    {
-      colorName: "Red",
-      colorCode: ["#D72638", "#217A2D", "#FFCE00"], // multiple colors
-      images: [
-        "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8cHJvZHVjdHxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&q=60&w=600",
-        "https://plus.unsplash.com/premium_photo-1679913792906-13ccc5c84d44?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8cHJvZHVjdHxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&q=60&w=600",
-      ],
-      sizes: ["S", "M", "L", "XL"],
-    },
-    {
-      colorName: "Green",
-      colorCode: ["#217A2D", "#FFCE00", "#FACE00", "#EECE00"],
-      images: [
-        "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8cHJvZHVjdHxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&q=60&w=600",
-        "https://plus.unsplash.com/premium_photo-1670537994863-5ad53a3214e0?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTN8fHByb2R1Y3R8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&q=60&w=600",
-      ],
-      sizes: ["M", "L"],
-    },
-  ],
-  reviews: [
-    {
-      id: 1,
-      name: "Ayesha Rahman",
-      rating: 5,
-      comment:
-        "Absolutely loved the quality! The color is vibrant, and fabric is soft. Perfect for festive occasions!",
-      date: "2025-09-22",
-    },
-    {
-      id: 2,
-      name: "Nusrat Jahan",
-      rating: 4,
-      comment:
-        "Beautiful saree, though the color was slightly lighter than in the photo. Still worth the price!",
-      date: "2025-09-28",
-    },
-  ],
-};
+import { useCart } from "../context/CartContext";
 
 type ColorTranslation = { name: string };
 
@@ -104,26 +46,47 @@ type Product = {
   soldCount?: number;
   attributes: ProductAttribute[];
 };
+
 type Props = {
   product: Product;
 };
 
 export default function ProductDetailsPage({ product }: Props) {
-  console.log(product.attributes);
   const [selectedAttribute, setSelectedAttribute] = useState(
     product?.attributes[0]
   );
-  const [selectedColor, setSelectedColor] = useState(productData.colors[0]);
   const [selectedImage, setSelectedImage] = useState(
     selectedAttribute?.images[0]
   );
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [tabValue, setTabValue] = useState("specifications");
 
-  //   const [product, setProduct] = useState<any>();
+  const { addToCart, cart } = useCart(); // ✅ Access context
+
+  const handleAddToCart = () => {
+    if (!selectedAttribute) {
+      alert("Please select a color first");
+      return;
+    }
+    if (!selectedSize) {
+      alert("Please select a size");
+      return;
+    }
+
+    const firstColor = selectedAttribute.colors[0]?.color?.id;
+
+    addToCart({
+      productId: product.id,
+      sizeId: selectedSize,
+      colorId: firstColor,
+      quantity: 1,
+    });
+
+    alert("Product added to cart!");
+  };
 
   return (
-    <div className="max-w-6xl mx-auto py-10 px-4 space-y-12">
+    <div className="max-w-6xl mx-auto py-10 px-4 md:px-0 space-y-12">
       {/* ---- Top Section ---- */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
         {/* Left: Image Gallery */}
@@ -138,7 +101,7 @@ export default function ProductDetailsPage({ product }: Props) {
             />
           </div>
 
-          <div className="flex gap-3">
+          <div className="flex flex-wrap gap-3">
             {selectedAttribute?.images?.map((img, i) => (
               <button
                 key={i}
@@ -176,7 +139,7 @@ export default function ProductDetailsPage({ product }: Props) {
             {product?.price && (
               <p className="text-gray-400 line-through">Tk {product?.price}</p>
             )}
-            {productData.originalPrice > productData.price && (
+            {product.price > product.discount && (
               <span className="bg-red-500 text-white text-xs px-2 py-1 rounded-full">
                 -
                 {Math.round(
@@ -185,24 +148,6 @@ export default function ProductDetailsPage({ product }: Props) {
                 %
               </span>
             )}
-          </div>
-
-          {/* Rating */}
-          <div className="flex items-center gap-1 mb-4">
-            {[...Array(5)].map((_, i) => (
-              <Star
-                key={i}
-                size={16}
-                className={clsx(
-                  i < Math.floor(productData.rating)
-                    ? "fill-yellow-400 text-yellow-400"
-                    : "text-gray-300"
-                )}
-              />
-            ))}
-            <span className="text-sm text-gray-600 ml-1">
-              {productData.rating.toFixed(1)} ({productData.soldCount}+ sold)
-            </span>
           </div>
 
           {/* Color Selection */}
@@ -217,9 +162,9 @@ export default function ProductDetailsPage({ product }: Props) {
                     setSelectedImage(colorVariant.images[0]);
                   }}
                   className={clsx(
-                    "w-8 h-8 rounded-full border-2 p-1  transition-all",
+                    "w-8 h-8 rounded-full border-2 p-1 transition-all",
                     selectedAttribute?.id === colorVariant.id
-                      ? " border-primary ring-2 ring-primary/30 scale-110"
+                      ? "border-primary ring-2 ring-primary/30 scale-110"
                       : "border-gray-300 hover:border-gray-400 hover:scale-105"
                   )}
                   title={colorVariant?.id}
@@ -256,69 +201,35 @@ export default function ProductDetailsPage({ product }: Props) {
 
           {/* Buttons */}
           <div className="flex items-center gap-4 mb-6">
-            <Button className="w-40">Add to Cart</Button>
+            <Button className="w-40" onClick={handleAddToCart}>
+              Add to Cart
+            </Button>
             <Button variant="outline" className="w-40">
               Buy Now
             </Button>
           </div>
-          <li className="text-gray-700 leading-relaxed">
-            {productData.description}
-          </li>
+
+          <li className="text-gray-700 leading-relaxed">{`test`}</li>
         </div>
       </div>
 
-      {/* ---- Tabs: Description, Specifications, Reviews ---- */}
+      {/* ---- Tabs ---- */}
       <Tabs value={tabValue} onValueChange={setTabValue} className="space-y-4">
         <TabsList>
           <TabsTrigger value="specifications">Specifications</TabsTrigger>
-          <TabsTrigger value="reviews">
-            Reviews ({productData.reviews.length})
-          </TabsTrigger>
+          <TabsTrigger value="reviews">Reviews (4)</TabsTrigger>
         </TabsList>
 
-        {/* Description */}
-
-        {/* Specifications */}
         <TabsContent value="specifications">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-gray-700">
-            {Object.entries(productData.specifications).map(([key, value]) => (
-              <div key={key} className="flex justify-between border-b py-2">
-                <span className="font-medium">{key}</span>
-                <span>{Array.isArray(value) ? value.join(", ") : value}</span>
-              </div>
+          <div className="grid grid-cols-1 gap-4 text-slate-700">
+            {selectedAttribute?.sizes?.map((size) => (
+              <li key={size.id}>{size?.size?.description}</li>
             ))}
           </div>
         </TabsContent>
 
-        {/* Reviews */}
         <TabsContent value="reviews">
-          <div className="space-y-6">
-            {productData.reviews.map((review) => (
-              <div
-                key={review.id}
-                className="border rounded-lg p-4 bg-gray-50 shadow-sm"
-              >
-                <div className="flex justify-between mb-2">
-                  <p className="font-medium">{review.name}</p>
-                  <span className="text-xs text-gray-500">{review.date}</span>
-                </div>
-                <div className="flex items-center mb-2">
-                  {[...Array(5)].map((_, i) => (
-                    <Star
-                      key={i}
-                      size={14}
-                      className={clsx(
-                        i < review.rating
-                          ? "fill-yellow-400 text-yellow-400"
-                          : "text-gray-300"
-                      )}
-                    />
-                  ))}
-                </div>
-                <p className="text-gray-700 text-sm">{review.comment}</p>
-              </div>
-            ))}
-          </div>
+          <div className="space-y-6">{/* reviews placeholder */}</div>
         </TabsContent>
       </Tabs>
     </div>
