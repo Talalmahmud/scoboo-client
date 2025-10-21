@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, ShoppingBasket, Trash2, Minus, Plus } from "lucide-react";
 import Image from "next/image";
 import { useCart } from "../context/CartContext";
+import Link from "next/link";
 
 const Cart = () => {
   const {
@@ -149,9 +150,14 @@ const Cart = () => {
               <p className="text-gray-600 text-sm">Subtotal:</p>
               <p className="text-lg font-bold text-rose-600">৳{total}</p>
             </div>
-            <Button className="w-full bg-rose-600 hover:bg-rose-700 text-white font-semibold">
-              Checkout
-            </Button>
+            <SheetClose asChild>
+              <Link
+                href={"/checkout"}
+                className=" px-4 py-2 text-center rounded-md bg-rose-600 hover:bg-rose-700 text-white font-semibold"
+              >
+                Checkout
+              </Link>
+            </SheetClose>
           </SheetFooter>
         </div>
       </SheetContent>
