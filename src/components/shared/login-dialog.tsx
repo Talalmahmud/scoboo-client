@@ -61,6 +61,7 @@ export function AuthDialog() {
 
   // --- Register ---
   const onRegister = async (data: RegisterData) => {
+    setEmail(data.email);
     const res = await api.post(
       process.env.NEXT_PUBLIC_BASE_URL + "/users",
       data
@@ -73,8 +74,13 @@ export function AuthDialog() {
   };
 
   // --- Verify OTP ---
-  const onVerifyOTP = (data: OTPData) => {
-    if (data.otp === otpSent) {
+  const onVerifyOTP = async (data: OTPData) => {
+    const res = await api.post(
+      process.env.NEXT_PUBLIC_BASE_URL + "/auth/verified",
+      { email: email, otp: data.otp }
+    );
+
+    if (res.status === 200) {
       setMessage("✅ Verification successful!");
       setTimeout(() => {
         setOpen(false);
