@@ -45,12 +45,30 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  // ✅ Fetch product details for all items
+  // --- Utility: Save minimal cart to localStorage ---
+  const saveCartToStorage = (cartItems: CartItem[]) => {
+    const minimalCart = cartItems.map(({ product, ...rest }) => rest);
+    localStorage.setItem("cart", JSON.stringify(minimalCart));
+  };
+
+  // --- Utility: Merge API product data with local cart ---
+  const mergeProducts = (
+    localItems: Omit<CartItem, "product">[],
+    apiItems: any[]
+  ) => {
+    return localItems.map((item) => {
+      const product =
+        apiItems?.find((p) => p.productId === item.productId) || null;
+      return { ...item, product };
+    });
+  };
+
+  // --- Fetch product details for cart items ---
   const fetchCartProducts = async (items: Omit<CartItem, "product">[]) => {
-    if (items.length === 0) return [];
+    if (!items.length) return [];
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/products/public/carts` || "",
+        `${process.env.NEXT_PUBLIC_BASE_URL}/products/public/carts`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -59,21 +77,14 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
       );
       const data = await res.json();
       if (!data.success) throw new Error(data.message || "API error");
-
-      // Merge product data with local quantities
-      return items.map((item) => {
-        const product = data.data.find(
-          (p: any) => p.productId === item.productId
-        );
-        return { ...item, product };
-      });
+      return mergeProducts(items, data.data);
     } catch (err) {
-      console.error("❌ Failed to fetch cart items:", err);
-      return items.map((item) => ({ ...item, product: null }));
+      console.error("❌ Failed to fetch cart products:", err);
+      return mergeProducts(items, []);
     }
   };
 
-  // ✅ Load from localStorage and sync with API
+  // --- Load cart from localStorage on mount ---
   useEffect(() => {
     const stored = localStorage.getItem("cart");
     if (!stored) {
@@ -88,15 +99,12 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
       .finally(() => setIsLoading(false));
   }, []);
 
-  // ✅ Save only IDs + quantity to localStorage
+  // --- Sync cart with localStorage whenever it changes ---
   useEffect(() => {
-    if (!isLoading) {
-      const minimalCart = cart.map(({ product, ...rest }) => rest);
-      localStorage.setItem("cart", JSON.stringify(minimalCart));
-    }
+    if (!isLoading) saveCartToStorage(cart);
   }, [cart, isLoading]);
 
-  // ✅ Add to cart and refresh from API
+  // --- Add item to cart ---
   const addToCart = async (newItem: Omit<CartItem, "product">) => {
     setCart((prev) => {
       const exists = prev.find(
@@ -108,7 +116,9 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
 
       if (exists) {
         return prev.map((item) =>
-          item === exists
+          item.productId === newItem.productId &&
+          item.sizeId === newItem.sizeId &&
+          item.colorId === newItem.colorId
             ? { ...item, quantity: item.quantity + newItem.quantity }
             : item
         );
@@ -117,30 +127,33 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
       return [...prev, { ...newItem }];
     });
 
-    // Fetch updated products from backend
-    const updatedLocalCart = JSON.parse(localStorage.getItem("cart") || "[]");
-    const updatedCart = await fetchCartProducts(updatedLocalCart);
+    // Optionally fetch product details for the new item only
+    const updatedCart = await fetchCartProducts([
+      ...cart.map(({ product, ...rest }) => rest),
+      newItem,
+    ]);
     setCart(updatedCart);
   };
 
-  // ✅ Remove
+  // --- Remove item from cart ---
   const removeFromCart = (
     productId: string,
     sizeId?: string,
     colorId?: string
   ) => {
-    const updated = cart.filter(
-      (item) =>
-        !(
-          item.productId === productId &&
-          item.sizeId === sizeId &&
-          item.colorId === colorId
-        )
+    setCart((prev) =>
+      prev.filter(
+        (item) =>
+          !(
+            item.productId === productId &&
+            item.sizeId === sizeId &&
+            item.colorId === colorId
+          )
+      )
     );
-    setCart(updated);
   };
 
-  // ✅ Increase
+  // --- Increase quantity ---
   const increaseQuantity = (
     productId: string,
     sizeId?: string,
@@ -157,7 +170,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
     );
   };
 
-  // ✅ Decrease
+  // --- Decrease quantity ---
   const decreaseQuantity = (
     productId: string,
     sizeId?: string,
@@ -176,7 +189,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
     );
   };
 
-  // ✅ Clear
+  // --- Clear cart ---
   const clearCart = () => {
     setCart([]);
     localStorage.removeItem("cart");
@@ -199,6 +212,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
+// --- Hook to use cart context ---
 export const useCart = () => {
   const ctx = useContext(CartContext);
   if (!ctx) throw new Error("useCart must be used within a CartProvider");

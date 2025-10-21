@@ -3,6 +3,7 @@ import { NavigationMenuDemo } from "./navigationmenu";
 import Cart from "./cart";
 import Link from "next/link";
 import MobileSideBar from "./mobile-sidebar";
+import { AuthDialog } from "./login-dialog";
 
 type Props = {};
 
@@ -24,6 +25,7 @@ const Header = (props: Props) => {
         </div>
         <div className=" flex items-center gap-2">
           <Cart />
+          <AuthDialog />
         </div>
       </div>
     </div>
