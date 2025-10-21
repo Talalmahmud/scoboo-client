@@ -80,7 +80,7 @@ const Cart = () => {
                     <Trash2 size={16} />
                   </button>
 
-                  <div className="relative w-20 h-20 rounded-md overflow-hidden">
+                  <div className="relative min-w-20 h-20 rounded-md overflow-hidden">
                     <Image
                       src={
                         item.product?.image ||
@@ -103,41 +103,41 @@ const Cart = () => {
                     <p className="text-xs text-gray-500">
                       ৳{item.product?.price} × {item.quantity}
                     </p>
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() =>
+                          decreaseQuantity(
+                            item.productId,
+                            item.sizeId,
+                            item.colorId
+                          )
+                        }
+                        className="p-1 border rounded hover:bg-gray-100"
+                      >
+                        <Minus size={14} />
+                      </button>
+                      <span className="text-sm font-semibold">
+                        {item.quantity}
+                      </span>
+                      <button
+                        onClick={() =>
+                          increaseQuantity(
+                            item.productId,
+                            item.sizeId,
+                            item.colorId
+                          )
+                        }
+                        className="p-1 border rounded hover:bg-gray-100"
+                      >
+                        <Plus size={14} />
+                      </button>
+                    </div>
                     <p className="text-sm font-bold text-rose-600">
                       ৳{(item.product?.price || 0) * item.quantity}
                     </p>
                   </div>
 
                   {/* Quantity Controls */}
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={() =>
-                        decreaseQuantity(
-                          item.productId,
-                          item.sizeId,
-                          item.colorId
-                        )
-                      }
-                      className="p-1 border rounded hover:bg-gray-100"
-                    >
-                      <Minus size={14} />
-                    </button>
-                    <span className="text-sm font-semibold">
-                      {item.quantity}
-                    </span>
-                    <button
-                      onClick={() =>
-                        increaseQuantity(
-                          item.productId,
-                          item.sizeId,
-                          item.colorId
-                        )
-                      }
-                      className="p-1 border rounded hover:bg-gray-100"
-                    >
-                      <Plus size={14} />
-                    </button>
-                  </div>
                 </div>
               ))
             )}
