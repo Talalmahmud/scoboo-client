@@ -12,139 +12,33 @@ import { Pagination } from "swiper/modules";
 import Image from "next/image";
 import clsx from "clsx";
 
-type ColorTranslation = { name: string };
-
-type Color = {
-  id: string;
-  code: string;
-  translations: ColorTranslation[];
-};
-
-type ProductAttributeColor = {
-  color: Color;
-};
-
-type ProductAttribute = {
-  id: string;
-  stock: number | 0;
-  images: string[];
-  colors: ProductAttributeColor[];
-};
-
-type Product = {
-  id: string;
-  translations: any;
-  price: number;
-  discount: number;
-  rating?: number;
-  soldCount?: number;
-  attributes: ProductAttribute[];
-};
-
-type ColorVariant = {
-  colorName: string;
-  colorCode: string;
-  images: string[];
-};
-
-interface ProductCardSliderProps {
-  products: Product[];
-}
-
-// Example product data (with color variants)
-const dummyProducts = [
-  {
-    id: "1",
-    name: "Classic Cotton T-Shirt",
-    price: 950,
-    originalPrice: 1200,
-    rating: 4.2,
-    soldCount: 89,
-    colors: [
-      {
-        colorName: "White",
-        colorCode: "#ffffff",
-        images: [
-          "https://images.unsplash.com/photo-1523381210434-271e8be1f52b?w=600&auto=format&fit=crop&q=60",
-          "https://images.unsplash.com/photo-1512436991641-6745cdb1723f?w=600&auto=format&fit=crop&q=60",
-        ],
-      },
-      {
-        colorName: "Black",
-        colorCode: "#000000",
-        images: [
-          "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600&auto=format&fit=crop&q=60",
-          "https://images.unsplash.com/photo-1503341455253-b2e723bb3dbb?w=600&auto=format&fit=crop&q=60",
-        ],
-      },
-    ],
-  },
-  {
-    id: "2",
-    name: "Summer Floral Dress",
-    price: 2250,
-    rating: 4.8,
-    soldCount: 132,
-    colors: [
-      {
-        colorName: "Floral",
-        colorCode: "#FFB6C1",
-        images: [
-          "https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=600&auto=format&fit=crop&q=60",
-          "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600&auto=format&fit=crop&q=60",
-        ],
-      },
-    ],
-  },
-  {
-    id: "3",
-    name: "Denim Jeans",
-    price: 1800,
-    rating: 4.4,
-    colors: [
-      {
-        colorName: "Blue",
-        colorCode: "#1E3A8A",
-        images: [
-          "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600&auto=format&fit=crop&q=60",
-        ],
-      },
-    ],
-  },
-  {
-    id: "4",
-    name: "Leather Handbag",
-    price: 3450,
-    rating: 4.9,
-    colors: [
-      {
-        colorName: "Brown",
-        colorCode: "#8B4513",
-        images: [
-          "https://images.unsplash.com/photo-1512436991641-6745cdb1723f?w=600&auto=format&fit=crop&q=60",
-        ],
-      },
-    ],
-  },
-];
-
 export default function SearchPage() {
-  const searchParmas = useSearchParams();
-  console.log(searchParmas.toString());
+  const searchParams = useSearchParams();
+  const router = useRouter();
   const [searchTerm, setSearchTerm] = useState("");
-  const [productList, setProductList] = useState<Product[]>([]);
+  const [productList, setProductList] = useState<any[]>([]);
 
-  const filteredProducts = dummyProducts.filter((p) =>
-    p.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // ✅ State to hold selected attributes for each product
+  const [selectedAttributes, setSelectedAttributes] = useState<{
+    [productId: string]: any;
+  }>({});
+
   const fetchProducts = async () => {
     try {
-      const fetchData = await api.get(
-        `/products/public/search/?${searchParmas.toString()}&language=EN`
+      const res = await api.get(
+        `/products/public/search/?${searchParams.toString()}&language=EN`
       );
-      const fetchReesult = await fetchData.data;
-      setProductList(fetchReesult.products);
-      console.log(fetchReesult);
+      const data = res.data;
+      setProductList(data.products);
+
+      // ✅ Initialize selected attribute for each product
+      const initSelections: any = {};
+      data.products.forEach((p: any) => {
+        if (p.attributes?.length > 0) {
+          initSelections[p.id] = p.attributes[0];
+        }
+      });
+      setSelectedAttributes(initSelections);
     } catch (error) {
       console.log(error);
     }
@@ -174,22 +68,19 @@ export default function SearchPage() {
 
       {/* --- Page Layout --- */}
       <div className="flex flex-col md:flex-row gap-4 w-full max-w-6xl mx-auto px-4 lg:px-0 py-4">
-        {/* Sidebar Filters */}
         <div className="md:w-64 md:flex-shrink-0">
           <FilterSidebar />
         </div>
 
-        {/* Products Grid */}
+        {/* --- Product Grid --- */}
         <div className="flex-1">
           <h2 className="text-lg font-semibold mb-4">
-            Showing {filteredProducts.length} results
+            Showing {productList.length} results
           </h2>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3  gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {productList.map((product) => {
-              const [selectedAttribute, setSelectedAttribute] =
-                useState<ProductAttribute>(product.attributes[0]);
-              const router = useRouter();
+              const selectedAttribute = selectedAttributes[product.id];
               const discount =
                 product.price && product.price > product.discount
                   ? Math.round(
@@ -198,33 +89,34 @@ export default function SearchPage() {
                   : 0;
 
               return (
-                <SwiperSlide key={product.id} className="py-4">
-                  <div
-                    onClick={() => router.push(`/product/${product.id}`)}
-                    className="group rounded-2xl cursor-pointer overflow-hidden shadow-md hover:shadow-xl transition-all border border-gray-100 bg-white"
-                  >
-                    {/* --- Inner Image Slider with Pagination --- */}
-                    <div className="relative h-64 w-full overflow-hidden">
-                      {discount > 0 && (
-                        <span className="absolute top-3 left-3 z-10 bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded-full shadow">
-                          -{discount}%
-                        </span>
-                      )}
+                <div
+                  key={product.id}
+                  onClick={() => router.push(`/product/${product.id}`)}
+                  className="group rounded-2xl cursor-pointer overflow-hidden shadow-md hover:shadow-xl transition-all border border-gray-100 bg-white"
+                >
+                  {/* --- Image Swiper --- */}
+                  <div className="relative h-64 w-full overflow-hidden">
+                    {discount > 0 && (
+                      <span className="absolute top-3 left-3 z-10 bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded-full shadow">
+                        -{discount}%
+                      </span>
+                    )}
 
-                      <Swiper
-                        modules={[Pagination]}
-                        pagination={{
-                          clickable: true,
-                          bulletClass:
-                            "swiper-pagination-bullet !bg-gray-400 opacity-60",
-                          bulletActiveClass: "!bg-primary opacity-100",
-                        }}
-                        spaceBetween={0}
-                        slidesPerView={1}
-                        loop
-                        className="h-full w-full"
-                      >
-                        {selectedAttribute?.images.map((img, i) => (
+                    <Swiper
+                      modules={[Pagination]}
+                      pagination={{
+                        clickable: true,
+                        bulletClass:
+                          "swiper-pagination-bullet !bg-gray-400 opacity-60",
+                        bulletActiveClass: "!bg-primary opacity-100",
+                      }}
+                      spaceBetween={0}
+                      slidesPerView={1}
+                      loop
+                      className="h-full w-full"
+                    >
+                      {selectedAttribute?.images?.map(
+                        (img: string, i: number) => (
                           <SwiperSlide key={i}>
                             <Image
                               height={400}
@@ -234,123 +126,101 @@ export default function SearchPage() {
                               className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                             />
                           </SwiperSlide>
-                        ))}
-                      </Swiper>
-                    </div>
+                        )
+                      )}
+                    </Swiper>
+                  </div>
 
-                    {/* --- Product Info --- */}
-                    <div className="p-4">
-                      <h3 className="text-base font-semibold line-clamp-1">
-                        {product?.translations?.[0].name}
-                      </h3>
+                  {/* --- Product Info --- */}
+                  <div className="p-4">
+                    <h3 className="text-base font-semibold line-clamp-1">
+                      {product?.translations?.[0]?.name}
+                    </h3>
 
-                      {/* Price + Discount */}
-                      <div className="flex items-center gap-2 mt-1">
-                        <p className="text-lg font-bold text-primary">
-                          Tk {product.price - product.discount}
+                    <div className="flex items-center gap-2 mt-1">
+                      <p className="text-lg font-bold text-primary">
+                        Tk {product.price - product.discount}
+                      </p>
+                      {product.discount > 0 && (
+                        <p className="text-sm text-gray-400 line-through">
+                          Tk {product.price}
                         </p>
-                        {product.discount > 0 && (
-                          <p className="text-sm text-gray-400 line-through">
-                            Tk {product.price}
-                          </p>
-                        )}
-                      </div>
-
-                      <div className="flex items-center justify-between mt-2">
-                        <div className="flex items-center gap-1">
-                          {[...Array(5)].map((_, i) => (
-                            <Star
-                              key={i}
-                              size={14}
-                              className={clsx(
-                                "fill-yellow-400",
-                                i < Math.floor(product.rating || 0)
-                                  ? "text-yellow-400"
-                                  : "text-gray-300"
-                              )}
-                            />
-                          ))}
-                          <span className="text-xs text-gray-500 ml-1">
-                            {product.rating?.toFixed(1) || "0.0"}
-                          </span>
-                        </div>
-                        {/* {product.soldCount && (
-                      <span className="text-xs text-gray-500">
-                        {product.soldCount}+ sold
-                      </span>
-                    )} */}
-                        <p className=" text-sm">
-                          stock ({selectedAttribute?.stock || 0})
-                        </p>
-                      </div>
-
-                      {/* Color Dots */}
-                      {/* {product.colors.length > 1 && (
-                    <div className="flex items-center gap-2 mt-3">
-                      {product.colors.map((c) => (
-                        <button
-                          key={c.colorName}
-                          onClick={() => setSelectedColor(c)}
-                          className={clsx(
-                            "w-5 h-5 rounded-full border shadow-sm ring-offset-2 transition-all",
-                            selectedColor.colorCode === c.colorCode
-                              ? "ring-2 ring-primary scale-110"
-                              : "hover:ring-2 hover:ring-gray-300"
-                          )}
-                          style={{ backgroundColor: c.colorCode }}
-                          title={c.colorName}
-                        />
-                      ))}
-                    </div>
-                  )} */}
-
-                      {product?.attributes?.length > 0 && (
-                        <div className="mt-4">
-                          <div className="flex flex-wrap gap-3">
-                            {product.attributes.map((attribute, attrIndex) => {
-                              const isSelected =
-                                selectedAttribute?.id === attribute.id;
-                              const gradient = attribute.colors.length
-                                ? `conic-gradient(${attribute.colors
-                                    .map((c) => c.color.code)
-                                    .join(",")})`
-                                : "#e5e7eb"; // fallback gray if no color
-
-                              return (
-                                <button
-                                  key={attrIndex}
-                                  onClick={(e) => {
-                                    e.stopPropagation(); // 👈 Prevents parent click
-                                    setSelectedAttribute(attribute);
-                                  }}
-                                  className={clsx(
-                                    "relative w-6 h-6 rounded-full border-2 transition-all duration-200 flex items-center justify-center",
-                                    isSelected
-                                      ? "border-primary ring-2 ring-primary/30 scale-110"
-                                      : "border-gray-300 hover:border-gray-400 hover:scale-105"
-                                  )}
-                                  style={{ background: gradient }}
-                                >
-                                  <div
-                                    className={clsx(
-                                      "absolute inset-0 rounded-full",
-                                      isSelected ? "ring-2 ring-white/70" : ""
-                                    )}
-                                  />
-                                </button>
-                              );
-                            })}
-                          </div>
-                        </div>
                       )}
                     </div>
+
+                    <div className="flex items-center justify-between mt-2">
+                      <div className="flex items-center gap-1">
+                        {[...Array(5)].map((_, i) => (
+                          <Star
+                            key={i}
+                            size={14}
+                            className={clsx(
+                              "fill-yellow-400",
+                              i < Math.floor(product.rating || 0)
+                                ? "text-yellow-400"
+                                : "text-gray-300"
+                            )}
+                          />
+                        ))}
+                        <span className="text-xs text-gray-500 ml-1">
+                          {product.rating?.toFixed(1) || "0.0"}
+                        </span>
+                      </div>
+                      <p className="text-sm">
+                        stock ({selectedAttribute?.stock || 0})
+                      </p>
+                    </div>
+
+                    {/* --- Color Dots --- */}
+                    {product?.attributes?.length > 0 && (
+                      <div className="mt-4 flex flex-wrap gap-3">
+                        {product.attributes.map(
+                          (attribute: any, attrIndex: number) => {
+                            const isSelected =
+                              selectedAttribute?.id === attribute.id;
+                            const gradient = attribute.colors?.length
+                              ? `conic-gradient(${attribute.colors
+                                  .map((c: any) => c.color.code)
+                                  .join(",")})`
+                              : "#e5e7eb";
+
+                            return (
+                              <button
+                                key={attrIndex}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setSelectedAttributes((prev) => ({
+                                    ...prev,
+                                    [product.id]: attribute,
+                                  }));
+                                }}
+                                className={clsx(
+                                  "relative w-6 h-6 rounded-full border-2 transition-all duration-200 flex items-center justify-center",
+                                  isSelected
+                                    ? "border-primary ring-2 ring-primary/30 scale-110"
+                                    : "border-gray-300 hover:border-gray-400 hover:scale-105"
+                                )}
+                                style={{ background: gradient }}
+                              >
+                                <div
+                                  className={clsx(
+                                    "absolute inset-0 rounded-full",
+                                    isSelected ? "ring-2 ring-white/70" : ""
+                                  )}
+                                />
+                              </button>
+                            );
+                          }
+                        )}
+                      </div>
+                    )}
                   </div>
-                </SwiperSlide>
+                </div>
               );
             })}
           </div>
 
-          {filteredProducts.length === 0 && (
+          {productList.length === 0 && (
             <div className="text-center text-gray-500 mt-10">
               No products found for “{searchTerm}”
             </div>
