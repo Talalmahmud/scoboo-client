@@ -72,7 +72,6 @@ export default function ProductDetailsPage({ product }: Props) {
       alert("Please select a size");
       return;
     }
-
     const firstColor = selectedAttribute.colors[0]?.color?.id;
 
     addToCart({
@@ -185,10 +184,10 @@ export default function ProductDetailsPage({ product }: Props) {
               {selectedAttribute?.sizes?.map((size) => (
                 <button
                   key={size.id}
-                  onClick={() => setSelectedSize(size.id)}
+                  onClick={() => setSelectedSize(size.size.id)}
                   className={clsx(
                     "px-4 py-2 border rounded-md text-sm transition-all",
-                    selectedSize === size.id
+                    selectedSize === size.size.id
                       ? "border-primary bg-primary text-white"
                       : "border-gray-300 hover:border-primary"
                   )}

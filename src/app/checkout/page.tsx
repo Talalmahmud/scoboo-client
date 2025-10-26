@@ -5,7 +5,7 @@ import { Minus, Plus, Trash2 } from "lucide-react";
 import Image from "next/image";
 import React, { useState } from "react";
 import axios from "@/utils/axios"; // ✅ your Axios instance (configured with baseURL)
-import { toast } from 'sonner';
+import { toast } from "sonner";
 
 export default function CheckoutPage() {
   const [selectedPayment, setSelectedPayment] = useState("cod");
@@ -53,6 +53,7 @@ export default function CheckoutPage() {
         guestEmail: form.email,
         guestPhone: form.phone,
         guestDistrict: form.city,
+        guestAddress: form.street,
         totalAmount: total + 80, // including shipping
         status: "PENDING",
         items: cart.map((item) => ({
@@ -64,7 +65,7 @@ export default function CheckoutPage() {
         })),
         payment: {
           method: selectedPayment,
-          status: selectedPayment === "cod" ? "PENDING" : "PAID",
+          status: selectedPayment === "CASH_ON_DELIVERY" ? "PENDING" : "PAID",
           amount: total + 80,
         },
       };
@@ -191,9 +192,10 @@ export default function CheckoutPage() {
             <h2 className="text-xl font-semibold mb-4">Payment Method</h2>
             <div className="space-y-3">
               {[
-                { id: "card", label: "Credit / Debit Card" },
-                { id: "paypal", label: "PayPal" },
-                { id: "cod", label: "Cash on Delivery" },
+                { id: "BANK_TRANSFER", label: "Bank Transfer" },
+                { id: "PAYPAL", label: "PayPal" },
+                { id: "CASH_ON_DELIVERY", label: "Cash on Delivery" },
+                { id: "STRIPE", label: "STRIPE" },
               ].map((method) => (
                 <label
                   key={method.id}
