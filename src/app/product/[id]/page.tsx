@@ -11,7 +11,7 @@ export default async function Page({
     process.env.NEXT_PUBLIC_BASE_URL + `/products/public/${id}/?language=EN`
   );
   const product = await fetchProduct.json();
-  console.log(product);
+  // console.log(product);
   return (
     <div>
       <ProductDetailsPage product={product.data} />
