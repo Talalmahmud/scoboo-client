@@ -30,6 +30,8 @@ const Cart = () => {
     0
   );
 
+  console.log(cart);
+
   return (
     <Sheet>
       {/* --- Cart Icon Trigger --- */}
@@ -98,9 +100,22 @@ const Cart = () => {
                       {item.product?.name || "Unnamed Product"}
                     </h3>
                     <p className="text-xs text-gray-500">
-                      {item.sizeId && <span>Size: {item.sizeId}</span>}{" "}
-                      {item.colorId && <span>Color: {item.colorId}</span>}
+                      {item.sizeId && (
+                        <span>Size: {item.product?.size?.title} </span>
+                      )}{" "}
+                      <span className=" ">
+                        Color:{" "}
+                        <span
+                          style={{
+                            backgroundColor: item?.product?.color?.code,
+                          }}
+                          className={`h-4  w-4 rounded-full`}
+                        >
+                          {item?.product?.color?.code}
+                        </span>
+                      </span>
                     </p>
+
                     <p className="text-xs text-gray-500">
                       ৳{item.product?.price} × {item.quantity}
                     </p>
