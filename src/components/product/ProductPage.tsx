@@ -44,6 +44,9 @@ type Product = {
   discount: number;
   rating?: number;
   soldCount?: number;
+  specifications?: string;
+  metaTitle?: string;
+  metaDescription?: string;
   attributes: ProductAttribute[];
 };
 
@@ -221,9 +224,13 @@ export default function ProductDetailsPage({ product }: Props) {
 
         <TabsContent value="specifications">
           <div className="grid grid-cols-1 gap-4 text-slate-700">
-            {selectedAttribute?.sizes?.map((size) => (
-              <li key={size.id}>{size?.size?.description}</li>
-            ))}
+            {product?.specifications ? (
+              <div
+                dangerouslySetInnerHTML={{ __html: product.specifications }}
+              />
+            ) : (
+              <p>No specifications available for this product.</p>
+            )}
           </div>
         </TabsContent>
 
