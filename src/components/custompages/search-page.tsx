@@ -46,7 +46,7 @@ export default function SearchPage() {
 
   useEffect(() => {
     fetchProducts();
-  }, []);
+  }, [searchParams]);
 
   return (
     <div className="min-h-screen bg-gray-50">
